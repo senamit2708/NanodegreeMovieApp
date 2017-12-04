@@ -1,11 +1,13 @@
 package com.example.senamit.nanodegreemovieapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,6 +23,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     TextView movieName;
     TextView movieReleaseDate;
     Context context;
+    ImageView movieImage;
 
     List<MovieDetails> movieDetailsList;
 
@@ -48,6 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         //lets starting inserting data into the variables
         movieName.setText(movieDetailsList.get(position).getMovieName());
         movieReleaseDate.setText(movieDetailsList.get(position).getMovieReleaseDate());
+        movieImage.setImageResource(movieDetailsList.get(position).getMovieImage());
 
 
     }
@@ -64,8 +68,9 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             super(itemView);
             Log.i(LOG_TAG,"inside viewHolder constructor ");
-            movieName= itemView.findViewById(R.id.txt_movie_name);
-            movieReleaseDate= itemView.findViewById(R.id.txt_movieReleaseDate);
+            movieName= (TextView) itemView.findViewById(R.id.txt_movie_name);
+            movieReleaseDate= (TextView) itemView.findViewById(R.id.txt_movieReleaseDate);
+            movieImage = (ImageView)itemView.findViewById(R.id.img_movieImage);
             context = itemView.getContext();
 
 

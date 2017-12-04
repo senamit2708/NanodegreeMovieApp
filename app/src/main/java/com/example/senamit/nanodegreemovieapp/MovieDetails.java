@@ -1,5 +1,9 @@
 package com.example.senamit.nanodegreemovieapp;
 
+import android.graphics.Bitmap;
+import android.media.Image;
+import android.widget.ImageView;
+
 /**
  * Created by senamit on 2/12/17.
  */
@@ -8,11 +12,14 @@ public class MovieDetails {
 
     String movieName;
     String movieReleaseDate;
+    int movieImage;
 
-    public MovieDetails(String movieName, String movieReleaseDate) {
+    public MovieDetails(String movieName, String movieReleaseDate, int movieImage) {
         this.movieName = movieName;
         this.movieReleaseDate = movieReleaseDate;
+        this.movieImage = movieImage;
     }
+
 
 
     public String getMovieName() {
@@ -21,5 +28,9 @@ public class MovieDetails {
 
     public String getMovieReleaseDate() {
         return movieReleaseDate;
+    }
+
+    public int getMovieImage() {
+        return movieImage;
     }
 }
