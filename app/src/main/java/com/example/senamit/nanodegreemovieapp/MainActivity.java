@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     RecyclerView recyclerView;
+    MovieDetailAdapter  movieDetailAdapter;
 
     public static String stringUrl = "https://api.themoviedb.org/3/discover/movie?page=4&include_video=false&include_adult=false&sort_by=popularity.desc&language=en-US&api_key=f6fc8d8e4043fefdfe43c153dd429479";
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         recyclerView = findViewById(R.id.recycler);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
 
 
@@ -53,14 +54,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<List<MovieDetails>> loader, List<MovieDetails> movieDetailsList) {
         Log.i(LOG_TAG,"inside onLoadFinished mehtod");
-     MovieAdapter  movieAdapter = new MovieAdapter(movieDetailsList);
-        recyclerView.setAdapter(movieAdapter);
+     movieDetailAdapter = new MovieDetailAdapter(movieDetailsList);
+        recyclerView.setAdapter(movieDetailAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<List<MovieDetails>> loader) {
 
-//       movieAdapter =  new MovieAdapter(new ArrayList<MovieDetails>());
+        movieDetailAdapter  =  new MovieDetailAdapter(new ArrayList<MovieDetails>());
 //        movieAdapter = new MovieAdapter();
     }
 

@@ -1,5 +1,7 @@
 package com.example.senamit.nanodegreemovieapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -154,6 +156,8 @@ public class QueryUtils {
         String releaseDate=null;
         String movieRating= null;
         String movieOverView= null;
+        Bitmap bmp = null;
+
         JSONObject baseJsonObject = new JSONObject(jsonResponse);
         JSONArray resultJsonArray = baseJsonObject.optJSONArray("results");
         for (int i=0; i< resultJsonArray.length(); i++) {
@@ -162,11 +166,24 @@ public class QueryUtils {
             releaseDate = resultJsonObject.optString("release_date");
             movieRating = resultJsonObject.optString("vote_average");
             movieOverView = resultJsonObject.optString("overview");
+            String movieImage = resultJsonObject.optString("poster_path");
+            StringBuilder imagePath = new StringBuilder();
+            imagePath.append("http://image.tmdb.org/t/p/w500");
+            imagePath.append(movieImage);
 
-            Log.i(LOG_TAG, "the int count is "+i);
+            try {
+                inputStream = new URL(imagePath.toString()).openStream();
+                bmp = BitmapFactory.decodeStream(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+
+
+            Log.i(LOG_TAG, "the image path is "+imagePath.toString());
             Log.i(LOG_TAG, "the name of the movie is  "+movieName);
 
-            movieDetailsArrayList.add(new MovieDetails(movieName, releaseDate,movieRating, movieOverView, R.drawable.testimage1));
+            movieDetailsArrayList.add(new MovieDetails(movieName, releaseDate,movieRating, movieOverView, bmp));
         }
 
 

@@ -14,7 +14,8 @@ public class MovieDetails {
     String movieReleaseDate;
     String movieRating;
     String movieOverView;
-    int movieImage;
+//    int movieImage;
+    Bitmap bitmap;
 
 //    public MovieDetails(String movieName, String movieReleaseDate, int movieImage) {
 //        this.movieName = movieName;
@@ -23,12 +24,21 @@ public class MovieDetails {
 //    }
 
 
-    public MovieDetails(String movieName, String movieReleaseDate, String movieRating, String movieOverView, int movieImage) {
+//    public MovieDetails(String movieName, String movieReleaseDate, String movieRating, String movieOverView, int movieImage) {
+//        this.movieName = movieName;
+//        this.movieReleaseDate = movieReleaseDate;
+//        this.movieRating = movieRating;
+//        this.movieOverView = movieOverView;
+//        this.movieImage = movieImage;
+//    }
+
+
+    public MovieDetails(String movieName, String movieReleaseDate, String movieRating, String movieOverView, Bitmap bitmap) {
         this.movieName = movieName;
         this.movieReleaseDate = movieReleaseDate;
         this.movieRating = movieRating;
         this.movieOverView = movieOverView;
-        this.movieImage = movieImage;
+        this.bitmap = bitmap;
     }
 
     public String getMovieName() {
@@ -39,8 +49,8 @@ public class MovieDetails {
         return movieReleaseDate;
     }
 
-    public int getMovieImage() {
-        return movieImage;
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
     public String getMovieRating() {
