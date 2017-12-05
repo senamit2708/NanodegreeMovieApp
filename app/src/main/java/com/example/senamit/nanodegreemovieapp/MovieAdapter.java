@@ -22,6 +22,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     TextView movieName;
     TextView movieReleaseDate;
+
     Context context;
     ImageView movieImage;
 
@@ -45,6 +46,16 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         Log.i(LOG_TAG, "inside onBindViewHOlder starting point");
@@ -52,6 +63,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         movieName.setText(movieDetailsList.get(position).getMovieName());
         movieReleaseDate.setText(movieDetailsList.get(position).getMovieReleaseDate());
         movieImage.setImageResource(movieDetailsList.get(position).getMovieImage());
+
+
 
 
     }

@@ -4,7 +4,10 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 
+import org.json.JSONException;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,29 +16,36 @@ import java.util.List;
 
 public class MovieDetailsLoader extends AsyncTaskLoader<List<MovieDetails>> {
 
-    List<MovieDetails> movieDetailsList;
+    String stringUrl;
 
-    public MovieDetailsLoader(Context context) {
-        super(context);
-    }
-    public MovieDetailsLoader(Context context, List<MovieDetails> movieDetailsList){
-        super(context);
-      this.movieDetailsList =  movieDetailsList;
-    }
 
+
+
+    public MovieDetailsLoader(Context context, String stringUrl) {
+        super(context);
+        this.stringUrl = stringUrl;
+    }
 
     @Override
     protected void onStartLoading() {
         onForceLoad();
     }
 
+
+
+
+
     @Override
     public List<MovieDetails> loadInBackground() {
+        ArrayList<MovieDetails> movieDetailsArrayList = null;
+
         try {
-            QueryUtils.fetchMovieRequest();
+          movieDetailsArrayList =  QueryUtils.fetchMovieRequest(stringUrl);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        return movieDetailsList;
+        return movieDetailsArrayList;
     }
 }

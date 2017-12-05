@@ -1,6 +1,11 @@
 package com.example.senamit.nanodegreemovieapp;
 
+import android.text.TextUtils;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +25,9 @@ import java.util.List;
 public class QueryUtils {
 
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
+    //https://developers.themoviedb.org/3/discover/movie-discover
 
-    public static String stringUrl = "https://api.themoviedb.org/3/movie/550?api_key=f6fc8d8e4043fefdfe43c153dd429479";
+
 
     //now lets create url from the string
     //and return the url to the calling function
@@ -136,13 +143,47 @@ public class QueryUtils {
 
     }
 
+    public static ArrayList<MovieDetails> extractFeaturesFromJSON(String jsonResponse) throws JSONException {
 
-    public static void fetchMovieRequest() throws IOException {
+        if (TextUtils.isEmpty(jsonResponse)){
+            return null;
+        }
+        ArrayList<MovieDetails> movieDetailsArrayList = new ArrayList<MovieDetails>();
+        InputStream inputStream = null;
+        String movieName=null;
+        String releaseDate=null;
+        String movieRating= null;
+        String movieOverView= null;
+        JSONObject baseJsonObject = new JSONObject(jsonResponse);
+        JSONArray resultJsonArray = baseJsonObject.optJSONArray("results");
+        for (int i=0; i< resultJsonArray.length(); i++) {
+            JSONObject resultJsonObject = resultJsonArray.optJSONObject(i);
+            movieName = resultJsonObject.optString("title");
+            releaseDate = resultJsonObject.optString("release_date");
+            movieRating = resultJsonObject.optString("vote_average");
+            movieOverView = resultJsonObject.optString("overview");
+
+            Log.i(LOG_TAG, "the int count is "+i);
+            Log.i(LOG_TAG, "the name of the movie is  "+movieName);
+
+            movieDetailsArrayList.add(new MovieDetails(movieName, releaseDate,movieRating, movieOverView, R.drawable.testimage1));
+        }
+
+
+        return movieDetailsArrayList;
+    }
+
+
+    public static ArrayList<MovieDetails> fetchMovieRequest(String stringUrl) throws IOException, JSONException {
         URL url = createUrl(stringUrl);
 
         String  jsonResponsee = null;
 
        jsonResponsee = makeHttpRequest(url);
+
        Log.i(LOG_TAG, "the fetch movie request is  "+ jsonResponsee);
+
+       ArrayList<MovieDetails> movieDetailsArrayList = extractFeaturesFromJSON(jsonResponsee);
+       return movieDetailsArrayList;
     }
 }

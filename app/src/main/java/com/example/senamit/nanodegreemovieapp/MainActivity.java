@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
     RecyclerView recyclerView;
-    ArrayList<MovieDetails> movieDetailsArrayList;
-    MovieAdapter movieAdapter;
+
+    public static String stringUrl = "https://api.themoviedb.org/3/discover/movie?page=4&include_video=false&include_adult=false&sort_by=popularity.desc&language=en-US&api_key=f6fc8d8e4043fefdfe43c153dd429479";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +29,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        movieDetailsArrayList = new ArrayList<MovieDetails>();
-        movieDetailsArrayList.add(new MovieDetails("doOrDiew","26th nov", R.drawable.testimage1));
-        movieDetailsArrayList.add(new MovieDetails("RestIsWaste","19th dec",R.drawable.testimage1));
-        movieDetailsArrayList.add(new MovieDetails("ddfs","19th dec",R.drawable.testimage1));
-        movieDetailsArrayList.add(new MovieDetails("amit","19th jan",R.drawable.testimage1));
-        movieDetailsArrayList.add(new MovieDetails("dfasdgd","19th march",R.drawable.testimage1));
-
 
 
 
         recyclerView = findViewById(R.id.recycler);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         recyclerView.setHasFixedSize(true);
 
 
@@ -54,38 +47,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<List<MovieDetails>> onCreateLoader(int i, Bundle bundle) {
         Log.i(LOG_TAG, "inside oncreateloader");
 //        return new MovieDetailsLoader(this, movieDetailsArrayList);
-        return new MovieDetailsLoader(this);
+        return new MovieDetailsLoader(this, stringUrl);
     }
 
     @Override
     public void onLoadFinished(Loader<List<MovieDetails>> loader, List<MovieDetails> movieDetailsList) {
         Log.i(LOG_TAG,"inside onLoadFinished mehtod");
-        movieAdapter = new MovieAdapter(movieDetailsList);
+     MovieAdapter  movieAdapter = new MovieAdapter(movieDetailsList);
         recyclerView.setAdapter(movieAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<List<MovieDetails>> loader) {
 
-       movieAdapter =  new MovieAdapter(new ArrayList<MovieDetails>());
+//       movieAdapter =  new MovieAdapter(new ArrayList<MovieDetails>());
+//        movieAdapter = new MovieAdapter();
     }
 
 
-//    @Override
-//    public <List<MovieDetails>> onCreateLoader(int i, Bundle bundle) {
-//        return new MovieDetailsLoader(this, movieDetailsArrayList);
-//    }
-//
-//    @Override
-//    public void onLoadFinished(android.content.Loader<List<MovieDetails>> loader, List<MovieDetails> movieDetails) {
-//        movieAdapter = new MovieAdapter(movieDetailsArrayList);
-//        recyclerView.setAdapter(movieAdapter);
-//    }
-//
-//    @Override
-//    public void onLoaderReset(android.content.Loader<List<MovieDetails>> loader) {
-//
-//    }
 
 
 }
