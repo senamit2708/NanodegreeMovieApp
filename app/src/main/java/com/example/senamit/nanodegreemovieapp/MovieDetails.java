@@ -14,6 +14,7 @@ public class MovieDetails {
     String movieReleaseDate;
     String movieRating;
     String movieOverView;
+    String movieImageUrl;
 //    int movieImage;
     Bitmap bitmap;
 
@@ -41,6 +42,14 @@ public class MovieDetails {
         this.bitmap = bitmap;
     }
 
+    public MovieDetails(String movieName, String movieReleaseDate, String movieRating, String movieOverView, String movieImageUrl) {
+        this.movieName = movieName;
+        this.movieReleaseDate = movieReleaseDate;
+        this.movieRating = movieRating;
+        this.movieOverView = movieOverView;
+        this.movieImageUrl = movieImageUrl;
+    }
+
     public String getMovieName() {
         return movieName;
     }
@@ -59,5 +68,9 @@ public class MovieDetails {
 
     public String getMovieOverView() {
         return movieOverView;
+    }
+
+    public String getMovieImageUrl() {
+        return movieImageUrl;
     }
 }

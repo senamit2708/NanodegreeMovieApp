@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
 
         holder.movieName.setText(movieDetailsList.get(position).getMovieName());
         holder.movieReleaseDate.setText(movieDetailsList.get(position).getMovieReleaseDate());
-        holder.movieImage.setImageBitmap(movieDetailsList.get(position).getBitmap());
+        Picasso.with(context).load(movieDetailsList.get(position).getMovieImageUrl()).into(holder.movieImage);
     }
 
     @Override

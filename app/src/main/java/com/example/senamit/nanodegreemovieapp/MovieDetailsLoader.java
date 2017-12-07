@@ -17,6 +17,8 @@ import java.util.List;
 public class MovieDetailsLoader extends AsyncTaskLoader<List<MovieDetails>> {
 
     String stringUrl;
+    ArrayList<MovieDetails> movieDetailsArrayList = new ArrayList<>();
+
 
 
 
@@ -37,7 +39,7 @@ public class MovieDetailsLoader extends AsyncTaskLoader<List<MovieDetails>> {
 
     @Override
     public List<MovieDetails> loadInBackground() {
-        ArrayList<MovieDetails> movieDetailsArrayList = null;
+
 
         try {
           movieDetailsArrayList =  QueryUtils.fetchMovieRequest(stringUrl);
@@ -46,6 +48,7 @@ public class MovieDetailsLoader extends AsyncTaskLoader<List<MovieDetails>> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return movieDetailsArrayList;
     }
 }

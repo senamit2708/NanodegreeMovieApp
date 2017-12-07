@@ -29,6 +29,8 @@ public class QueryUtils {
     public static final String LOG_TAG = QueryUtils.class.getSimpleName();
     //https://developers.themoviedb.org/3/discover/movie-discover
 
+   public static ArrayList<MovieDetails> movieDetailsArrayList;
+
 
 
     //now lets create url from the string
@@ -151,12 +153,11 @@ public class QueryUtils {
             return null;
         }
         ArrayList<MovieDetails> movieDetailsArrayList = new ArrayList<MovieDetails>();
-        InputStream inputStream = null;
         String movieName=null;
         String releaseDate=null;
         String movieRating= null;
         String movieOverView= null;
-        Bitmap bmp = null;
+
 
         JSONObject baseJsonObject = new JSONObject(jsonResponse);
         JSONArray resultJsonArray = baseJsonObject.optJSONArray("results");
@@ -171,19 +172,10 @@ public class QueryUtils {
             imagePath.append("http://image.tmdb.org/t/p/w500");
             imagePath.append(movieImage);
 
-            try {
-                inputStream = new URL(imagePath.toString()).openStream();
-                bmp = BitmapFactory.decodeStream(inputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            
-
-
             Log.i(LOG_TAG, "the image path is "+imagePath.toString());
             Log.i(LOG_TAG, "the name of the movie is  "+movieName);
 
-            movieDetailsArrayList.add(new MovieDetails(movieName, releaseDate,movieRating, movieOverView, bmp));
+            movieDetailsArrayList.add(new MovieDetails(movieName, releaseDate,movieRating, movieOverView, imagePath.toString()));
         }
 
 
@@ -200,7 +192,7 @@ public class QueryUtils {
 
        Log.i(LOG_TAG, "the fetch movie request is  "+ jsonResponsee);
 
-       ArrayList<MovieDetails> movieDetailsArrayList = extractFeaturesFromJSON(jsonResponsee);
+        movieDetailsArrayList = extractFeaturesFromJSON(jsonResponsee);
        return movieDetailsArrayList;
     }
 }
