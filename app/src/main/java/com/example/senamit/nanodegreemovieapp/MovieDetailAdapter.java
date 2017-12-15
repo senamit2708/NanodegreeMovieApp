@@ -13,23 +13,16 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by senamit on 5/12/17.
- */
-
 public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.ViewHolder> {
 
-    public static final String LOG_TAG = MovieDetailAdapter.class.getSimpleName();
-
-
-
+    private static final String LOG_TAG = MovieDetailAdapter.class.getSimpleName();
+    private final ListItemClickListener onClickListener;
     Context context;
-
-
     List<MovieDetails> movieDetailsList;
 
-    public MovieDetailAdapter(List<MovieDetails> movieDetailsList) {
+    public MovieDetailAdapter(List<MovieDetails> movieDetailsList, ListItemClickListener onClickListener) {
         this.movieDetailsList = movieDetailsList;
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -51,20 +44,28 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
         return movieDetailsList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView movieName;
         TextView movieReleaseDate;
         ImageView movieImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
-            Log.i(LOG_TAG,"inside viewHolder constructor ");
-            movieName= (TextView) itemView.findViewById(R.id.txt_movie_name);
-            movieReleaseDate= (TextView) itemView.findViewById(R.id.txt_movieReleaseDate);
-            movieImage = (ImageView)itemView.findViewById(R.id.img_movieImage);
+            movieName = (TextView) itemView.findViewById(R.id.txt_movie_name);
+            movieReleaseDate = (TextView) itemView.findViewById(R.id.txt_movieReleaseDate);
+            movieImage = (ImageView) itemView.findViewById(R.id.img_movieImage);
             context = itemView.getContext();
-
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            int clikedItemIndex = getAdapterPosition();
+            onClickListener.onListItemClick(clikedItemIndex, movieDetailsList.get(clikedItemIndex));
+        }
+    }
+
+    public interface ListItemClickListener {
+        void onListItemClick(int clikcedItemIndex, MovieDetails movieDetail);
     }
 }

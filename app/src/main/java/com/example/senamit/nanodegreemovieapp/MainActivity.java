@@ -2,96 +2,141 @@ package com.example.senamit.nanodegreemovieapp;
 
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
-import android.net.Uri;
+import android.content.SharedPreferences;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieDetails>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<MovieDetails>>, MovieDetailAdapter.ListItemClickListener {
 
-    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     RecyclerView recyclerView;
-    MovieDetailAdapter  movieDetailAdapter;
-    EndlessRecycleOnScrollListener endlessRecycleOnScrollListener;
-    int count =0;
-    int pageNumber=1;
-    String string1= "https://api.themoviedb.org/3/discover/movie?page=";
-    String string2 = "&include_video=false&include_adult=false&sort_by=popularity.desc&language=en-US&api_key=f6fc8d8e4043fefdfe43c153dd429479";
+    MovieDetailAdapter movieDetailAdapter;
+    private static int count = 0;
+    Spinner spinner;
+    Bundle savedInstanceState;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    private String stringTest = null;
 
-    public static String stringUrl = "https://api.themoviedb.org/3/discover/movie?page=1&include_video=false&include_adult=false&sort_by=popularity.desc&language=en-US&api_key=f6fc8d8e4043fefdfe43c153dd429479";
-
-
-    List<MovieDetails> arrayList= new ArrayList<>();
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+
+        sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (!CheckNetwork.isInternetAvailable(getApplicationContext())) {
+            AlertDialogSettingFragment alertDialogSettingFragment = new AlertDialogSettingFragment();
+            alertDialogSettingFragment.show(getSupportFragmentManager(), "dialog");
+        } else {
+            setupRecyclerView();
+        }
+    }
+
+    private void setupRecyclerView() {
         recyclerView = findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setHasFixedSize(true);
-
-        endlessRecycleOnScrollListener = new EndlessRecycleOnScrollListener() {
-
-            @Override
-            public void mLoadMore() {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder = stringBuilder.append(string1).append(pageNumber).append(string2);
-                Log.i(LOG_TAG,"the string builder is "+stringBuilder);
-                Log.i(LOG_TAG, "the page number is  "+pageNumber);
-                stringUrl = stringBuilder.toString();
-
-                getLoaderManager().initLoader(pageNumber, savedInstanceState,MainActivity.this);
-
-            }
-
-
-        };
-        recyclerView.addOnScrollListener(endlessRecycleOnScrollListener);
-
-        getLoaderManager().initLoader(0, savedInstanceState,this);
-
     }
 
     @Override
     public Loader<List<MovieDetails>> onCreateLoader(int i, Bundle bundle) {
-        Log.i(LOG_TAG, "inside oncreateloader");
-
-
-        return new MovieDetailsLoader(this, stringUrl);
+        return new MovieDetailsLoader(this, stringTest);
     }
 
     @Override
     public void onLoadFinished(Loader<List<MovieDetails>> loader, List<MovieDetails> movieDetailsList) {
-        Log.i(LOG_TAG,"inside onLoadFinished mehtod");
-        Log.i(LOG_TAG,"total no of items before in class object"+ arrayList.size());
-        arrayList.addAll(movieDetailsList);
-        movieDetailAdapter = new MovieDetailAdapter(arrayList);
-        recyclerView.setAdapter(movieDetailAdapter);
-        pageNumber++;
-        Log.i(LOG_TAG,"total no of items after in class object"+ arrayList.size());
-        Log.i(LOG_TAG, "the page number is "+pageNumber);
-        Log.i(LOG_TAG, "the total number o item in adapter is "+ movieDetailAdapter.getItemCount());
+        if (movieDetailsList != null) {
+            movieDetailAdapter = new MovieDetailAdapter(movieDetailsList, this);
+            recyclerView.setAdapter(movieDetailAdapter);
+            count++;
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<List<MovieDetails>> loader) {
-
-        movieDetailAdapter  =  new MovieDetailAdapter(new ArrayList<MovieDetails>());
-        Log.i(LOG_TAG, "inside reset");
-
+        movieDetailAdapter = new MovieDetailAdapter(new ArrayList<MovieDetails>(), this);
+        recyclerView.setAdapter(null);
     }
 
+    @Override
+    public void onListItemClick(int clikcedItemIndex, MovieDetails movieDetailsList) {
+        Intent intent = new Intent(MainActivity.this, MovieDetailDescription.class);
+        intent.putExtra("movieDesc", movieDetailsList);
+        startActivity(intent);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem spinnerItem = menu.findItem(R.id.menu_spinner);
+        spinner = (Spinner) MenuItemCompat.getActionView(spinnerItem);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_list_item_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        int value = sharedPreferences.getInt("positionKey", -1);
+        if (value != -1) {
+            spinner.setSelection(value);
+        }
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+
+                Log.i(LOG_TAG, "inside on option item selected");
+                String spinnerValue = spinner.getSelectedItem().toString();
+                editor.putInt("positionKey", position);
+                editor.commit();
+                spinnerfun(spinnerValue);
+                getLoaderManager().initLoader(count, savedInstanceState, MainActivity.this);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+
+        });
+
+        return true;
+    }
+
+    private void spinnerfun(String spinnerValue) {
+        switch (spinnerValue) {
+            case "Popular":
+                stringTest = MovieApiLinkCreator.favrtMovieUrl1;
+                Log.i(LOG_TAG, "the url is " + stringTest);
+                break;
+            case "Top Rated":
+                stringTest = MovieApiLinkCreator.favrtMovieUrl2;
+                break;
+            case "Now Playing":
+                stringTest = MovieApiLinkCreator.favrtMovieUrl3;
+                break;
+            case "Upcoming":
+                stringTest = MovieApiLinkCreator.favrtMovieUrl4;
+                break;
+            default:
+                break;
+        }
+    }
 
 }
