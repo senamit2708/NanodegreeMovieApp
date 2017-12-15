@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,13 +34,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     private String stringTest = null;
+    Parcelable listState;
+    RecyclerView.LayoutManager mLayoutManager;
+    private final static String LIST_STATE_KEY = "recycler_list_state";
+    private String PREF_FILE="Option";
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(PREF_FILE, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -53,8 +58,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void setupRecyclerView() {
         recyclerView = findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mLayoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setHasFixedSize(true);
+        getLoaderManager().initLoader(count, savedInstanceState, MainActivity.this);
     }
 
     @Override
@@ -67,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (movieDetailsList != null) {
             movieDetailAdapter = new MovieDetailAdapter(movieDetailsList, this);
             recyclerView.setAdapter(movieDetailAdapter);
-            count++;
         }
+        count++;
     }
 
     @Override
@@ -101,8 +108,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-
-                Log.i(LOG_TAG, "inside on option item selected");
                 String spinnerValue = spinner.getSelectedItem().toString();
                 editor.putInt("positionKey", position);
                 editor.commit();
@@ -113,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
-
         });
 
         return true;
@@ -139,4 +143,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        listState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, listState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            listState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (listState != null) {
+            mLayoutManager.onRestoreInstanceState(listState);
+        }
+    }
 }
