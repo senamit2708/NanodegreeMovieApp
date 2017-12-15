@@ -14,7 +14,7 @@ import android.util.Log;
     private static String UPCOMING_JSON_DATA="https://api.themoviedb.org/3/movie/upcoming?page=2&language=en-US";
     private static String TOP_RATED_JSON_DATA="https://api.themoviedb.org/3/movie/top_rated?page=1&language=en-US";
     private static String APIKEY = "api_key";
-    private static String KEY ="f6fc8d8e4043fefdfe43c153dd429479";
+    private static String KEY ="";
 
     public static String favrtMovieUrl1 = Uri.parse(POPULAR_JSON_DATA).buildUpon().appendQueryParameter(APIKEY, KEY).build().toString();
 
