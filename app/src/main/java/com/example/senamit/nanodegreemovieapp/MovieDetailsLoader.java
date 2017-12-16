@@ -20,8 +20,9 @@ public class MovieDetailsLoader extends AsyncTaskLoader<List<MovieDetails>> {
 
     @Override
     protected void onStartLoading() {
-        onForceLoad();
+        super.onForceLoad();
     }
+
 
     @Override
     public List<MovieDetails> loadInBackground() {

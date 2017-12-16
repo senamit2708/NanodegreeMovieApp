@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     Parcelable listState;
     RecyclerView.LayoutManager mLayoutManager;
     private final static String LIST_STATE_KEY = "recycler_list_state";
-    private String PREF_FILE="Option";
+    private String PREF_FILE = "Option";
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView = findViewById(R.id.recycler);
         mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setHasFixedSize(true);
         getLoaderManager().initLoader(count, savedInstanceState, MainActivity.this);
     }
 
@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (value != -1) {
             spinner.setSelection(value);
         }
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -113,13 +112,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 editor.commit();
                 spinnerfun(spinnerValue);
                 getLoaderManager().initLoader(count, savedInstanceState, MainActivity.this);
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-
         return true;
     }
 
@@ -148,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
         listState = mLayoutManager.onSaveInstanceState();
         outState.putParcelable(LIST_STATE_KEY, listState);
+
     }
 
     @Override
@@ -165,4 +165,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             mLayoutManager.onRestoreInstanceState(listState);
         }
     }
+
 }
